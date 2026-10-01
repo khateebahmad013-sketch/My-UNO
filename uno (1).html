@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ur-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UNO Card Game</title>
+<meta name="description" content="Play UNO Card Game online free — Classic, No Mercy, Flip, All Wild, Dare and Speed modes against the computer. Realistic 3D cards, 4 difficulty levels.">
+<meta property="og:title" content="UNO Card Game — Play Free Online">
+<meta property="og:description" content="Play UNO Card Game online free against the computer with 6 game modes and 4 difficulty levels.">
+<meta property="og:type" content="website">
+<style>
+:root{--bg:#fff8ee;--fg:#1d1a16;--card:#fff;--muted:#6b6459;--line:#e6dccb;--r:#e53935;--y:#fdd835;--g:#43a047;--b:#1e88e5;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15130f;--fg:#f4eee3;--card:#221f19;--muted:#a79f90;--line:#3a352b}}
+:root[data-theme="dark"]{--bg:#15130f;--fg:#f4eee3;--card:#221f19;--muted:#a79f90;--line:#3a352b}
+html{scroll-padding-top:60px;scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.55}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:18px;align-items:center;padding:12px 20px;background:var(--bg);border-bottom:1px solid var(--line)}
+nav b{font-size:20px;letter-spacing:1px;margin-right:auto;color:var(--r)}
+nav a{color:var(--fg);text-decoration:none;font-weight:600;font-size:15px}
+section{max-width:960px;margin:0 auto;padding:44px 20px}
+.hero{text-align:center;padding-top:56px}
+.hero h1{font-size:clamp(42px,9vw,80px);margin:0;line-height:1;letter-spacing:2px}
+.hero p{color:var(--muted);max-width:520px;margin:14px auto 24px;font-size:18px}
+.btn{display:inline-block;border:0;border-radius:999px;padding:12px 26px;font-size:16px;font-weight:700;background:var(--r);color:#fff;cursor:pointer;text-decoration:none}
+.btn.alt{background:var(--card);color:var(--fg);border:1px solid var(--line)}
+.fan{display:flex;justify-content:center;margin:34px 0 8px}
+.fan .c{margin:0 -10px;transform:rotate(var(--a))}
+h2{font-size:30px;margin:0 0 18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.box h3{margin:0 0 6px;font-size:17px}
+.box p,.box li{margin:0;color:var(--muted);font-size:15px}
+.box ul{margin:0;padding-left:18px}
+.row,.mid,.fan,.opp .stack{perspective:700px}
+.c{position:relative;width:66px;height:96px;border-radius:9px;border:3px solid #fff;flex:none;user-select:none;
+  box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 3px 3px rgba(0,0,0,.3),0 6px 10px rgba(0,0,0,.28);transform-style:preserve-3d;
+  transition:transform .18s ease,box-shadow .18s ease;overflow:hidden}
+.c::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.35),rgba(255,255,255,0) 45%);pointer-events:none}
+.c.R{background:linear-gradient(155deg,#ff6b60,#c62828)}
+.c.Y{background:linear-gradient(155deg,#ffe469,#f9a825)}
+.c.G{background:linear-gradient(155deg,#72e08a,#2e7d32)}
+.c.B{background:linear-gradient(155deg,#5fb2f7,#1565c0)}
+.c.W{background:linear-gradient(155deg,#3a3a3a,#050505)}
+.c .oval{position:absolute;left:50%;top:50%;width:80%;height:58%;border-radius:50%;background:#fff;
+  transform:translate(-50%,-50%) rotate(-25deg);box-shadow:inset 0 0 5px rgba(0,0,0,.2),0 0 0 2px rgba(0,0,0,.85)}
+.c.W .oval{background:conic-gradient(var(--r) 0 25%,var(--b) 0 50%,var(--g) 0 75%,var(--y) 0);
+  transform:translate(-50%,-50%) rotate(0);width:64%;height:64%;box-shadow:0 0 0 3px #111,inset 0 0 4px #0006}
+.c .val{position:relative;z-index:2;font-weight:900;font-size:24px;font-style:italic;
+  transform:skewX(-10deg);display:block;text-align:center;line-height:96px}
+.c.R .val,.c.R .corner{color:#c62828}
+.c.Y .val,.c.Y .corner{color:#f9a825}
+.c.G .val,.c.G .corner{color:#2e7d32}
+.c.B .val,.c.B .corner{color:#1565c0}
+.c.W .val{color:#fff;font-size:15px;text-shadow:0 1px 3px #000;line-height:96px}
+.c .corner{position:absolute;z-index:3;font-size:10px;font-weight:800;font-style:italic;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.c.R .corner,.c.Y .corner,.c.G .corner,.c.B .corner{text-shadow:none}
+.c.W .corner{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.c .corner.tl{top:4px;left:5px}
+.c .corner.br{bottom:4px;right:5px;transform:rotate(180deg)}
+.c.back{background:radial-gradient(circle at 35% 30%,#3a3a3a,#0c0c0c 70%);color:var(--r);font-size:14px;font-weight:900;
+  border-color:#fff;display:flex;align-items:center;justify-content:center;font-style:italic}
+.c.can{cursor:pointer;transform:translateY(-8px)}
+.c.can:hover{transform:translateY(-14px) rotateX(10deg) scale(1.05);box-shadow:0 4px 4px rgba(0,0,0,.3),0 16px 20px rgba(0,0,0,.4)}
+.c.dim{opacity:.5}
+#deck{position:relative}
+#deck::before,#deck::after{content:'';position:absolute;inset:0;border-radius:8px;background:#111;border:3px solid #fff;z-index:-1}
+#deck::before{transform:translate(3px,4px) rotate(-3deg)}
+#deck::after{transform:translate(6px,8px) rotate(3deg);opacity:.65}
+.table{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}
+.opps{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:8px}
+.opp{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 14px;border-radius:12px;opacity:.55;transition:opacity .2s}
+.opp.active{opacity:1;background:var(--bg);box-shadow:0 0 0 2px var(--r) inset}
+.opp .stack{position:relative;height:44px;width:50px}
+.opp .stack .c{position:absolute;width:32px;height:44px;font-size:0;border-width:2px}
+.opp b{font-size:13px}
+.opp small{font-size:12px}
+.mid{display:flex;justify-content:center;align-items:center;gap:22px;margin:10px 0;flex-wrap:wrap}
+.dot{width:26px;height:26px;border-radius:50%;display:inline-block;vertical-align:middle;border:2px solid var(--fg)}
+.msg{text-align:center;font-weight:700;min-height:26px;margin:6px 0}
+.pick{display:flex;gap:10px;justify-content:center;margin:8px 0}
+.pick button{width:44px;height:44px;border-radius:50%;border:3px solid #fff;cursor:pointer;box-shadow:0 2px 6px #0004}
+.row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:100px;padding:6px 0}
+.setup{display:flex;gap:10px;justify-content:center;margin:16px 0;flex-wrap:wrap}
+.setup button{padding:14px 22px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--fg);font-weight:700;cursor:pointer;font-size:16px}
+.setup button.sel{border-color:var(--r);color:var(--r);box-shadow:0 0 0 2px var(--r) inset}
+.score{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:10px 0 0;font-size:14px;color:var(--muted)}
+.modes{display:flex;gap:10px;justify-content:center;margin:16px 0;flex-wrap:wrap}
+.modes button{padding:12px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--fg);font-weight:700;cursor:pointer;font-size:14px;text-align:left;max-width:160px}
+.modes button.sel{border-color:var(--r);box-shadow:0 0 0 2px var(--r) inset}
+.modes button b{display:block;font-size:15px}
+.modes button small{display:block;font-weight:400;font-size:12px;margin-top:2px}
+.modelabel{text-align:center;font-weight:700;color:var(--r);margin-bottom:6px}
+body.uf-dark .table{box-shadow:0 0 0 3px #7c4dff inset,0 0 24px #7c4dff55}
+body.uf-dark nav b{color:#7c4dff}
+.unobtn{position:fixed;bottom:18px;right:18px;border-radius:999px;padding:14px 22px;background:var(--y);color:#222;font-weight:900;border:3px solid #fff;box-shadow:0 4px 10px #0006;cursor:pointer;z-index:9;font-size:16px}
+.pop{animation:pop .3s ease}
+@keyframes pop{0%{transform:scale(.5) rotateY(90deg);opacity:0}60%{transform:scale(1.08) rotateY(-12deg);opacity:1}100%{transform:scale(1) rotateY(0)}}
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+small{color:var(--muted)}
+footer{text-align:center;color:var(--muted);padding:24px;font-size:14px}
+</style>
+</head>
+<body>
+<nav><b>UNO</b><a href="#rules">Rules</a><a href="#play">Play</a></nav>
+
+<section class="hero">
+<h1><span style="color:var(--r)">U</span><span style="color:var(--y)">N</span><span style="color:var(--g)">O</span> Card Game</h1>
+<p>Be the first player to empty your hand. Read the rules and play with 2 to 4 players.</p>
+<a class="btn" href="#play">Play Now</a> <a class="btn alt" href="#rules">View Rules</a>
+<div class="fan">
+<div class="c R" style="--a:-18deg"><span class="corner tl">7</span><span class="oval"></span><span class="val">7</span><span class="corner br">7</span></div><div class="c Y" style="--a:-9deg"><span class="corner tl">+2</span><span class="oval"></span><span class="val">+2</span><span class="corner br">+2</span></div><div class="c W" style="--a:0deg"><span class="corner tl">★</span><span class="oval"></span><span class="val">★</span><span class="corner br">★</span></div><div class="c G" style="--a:9deg"><span class="corner tl">⊘</span><span class="oval"></span><span class="val">⊘</span><span class="corner br">⊘</span></div><div class="c B" style="--a:18deg"><span class="corner tl">5</span><span class="oval"></span><span class="val">5</span><span class="corner br">5</span></div>
+</div>
+</section>
+
+<section id="rules">
+<h2>Rules</h2>
+<div class="grid">
+<div class="box"><h3>Goal</h3><p>Be the first to get rid of all your cards.</p></div>
+<div class="box"><h3>Setup</h3><p>Each player gets 7 cards. One card is placed face up in the middle.</p></div>
+<div class="box"><h3>Your turn</h3><p>Play a card matching the color or number/symbol of the center card. If you can't, draw a card from the deck.</p></div>
+<div class="box"><h3>⊘ Skip</h3><p>The next player's turn is skipped.</p></div>
+<div class="box"><h3>⇄ Reverse</h3><p>The play direction reverses (with 2 players it acts like Skip).</p></div>
+<div class="box"><h3>+2 / +4</h3><p>The next player draws 2 or 4 cards and loses their turn. With +4 you also choose a new color.</p></div>
+<div class="box"><h3>★ Wild</h3><p>Can be played anytime, and you choose the new color.</p></div>
+<div class="box"><h3>UNO!</h3><p>When you have just one card left, don't forget to press the UNO button.</p></div>
+<div class="box" onclick="goMode('nomercy')" style="cursor:pointer"><h3>💀 No Mercy</h3><p>Harsher variant: colored +6 cards and a Wild +10 join the deck.</p><small>Tap to play →</small></div>
+<div class="box" onclick="goMode('flip')" style="cursor:pointer"><h3>🔄 Flip</h3><p>Adds Skip Everyone, +5 and Flip cards, which flip the table's theme.</p><small>Tap to play →</small></div>
+<div class="box" onclick="goMode('allwild')" style="cursor:pointer"><h3>🌈 All Wild</h3><p>Every card is a Wild card — color changes almost every turn.</p><small>Tap to play →</small></div>
+<div class="box" onclick="goMode('dare')" style="cursor:pointer"><h3>🎯 Dare</h3><p>Dare cards skip the next player and throw in a random dare.</p><small>Tap to play →</small></div>
+<div class="box" onclick="goMode('speed')" style="cursor:pointer"><h3>⚡ Speed</h3><p>Classic rules but everyone starts with only 5 cards.</p><small>Tap to play →</small></div>
+</div>
+<div style="text-align:center;margin-top:18px"><button class="btn alt" id="learnBtn">🎓 Learn to Play (Tutorial)</button></div>
+</section>
+
+<div id="tutOverlay" style="display:none;position:fixed;inset:0;background:#000a;z-index:20;align-items:center;justify-content:center;padding:20px">
+<div style="background:var(--card);border-radius:16px;padding:24px;max-width:420px;width:100%;text-align:center">
+<div id="tutBody" style="min-height:120px"></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px">
+<button class="btn alt" id="tutPrev">Back</button>
+<small id="tutIdx"></small>
+<button class="btn" id="tutNext">Next</button>
+</div>
+<div style="margin-top:10px"><button class="btn alt" id="tutClose">Close</button></div>
+</div>
+</div>
+
+<section id="play">
+<h2>Choose a Game</h2>
+<div class="modes" id="modes">
+<button data-m="classic"><b>🎴 Classic</b><small>Standard UNO rules</small></button>
+<button data-m="nomercy"><b>💀 No Mercy</b><small>+6 and Wild +10 cards</small></button>
+<button data-m="flip"><b>🔄 Flip</b><small>Skip Everyone, +5, Flip</small></button>
+<button data-m="allwild"><b>🌈 All Wild</b><small>Every card is Wild</small></button>
+<button data-m="dare"><b>🎯 Dare</b><small>Dare cards, skip + surprise</small></button>
+<button data-m="speed"><b>⚡ Speed</b><small>Only 5 starting cards</small></button>
+</div>
+<h2>Choose Players</h2>
+<div class="setup" id="setup">
+<button data-n="2">2 Players</button>
+<button data-n="3">3 Players</button>
+<button data-n="4">4 Players</button>
+</div>
+<small style="display:block;text-align:center;margin:-8px 0 14px">You are Player 1, the rest are played by the computer.</small>
+<div style="display:flex;gap:8px;justify-content:center;align-items:center;margin:-6px 0 18px;flex-wrap:wrap">
+<label for="uname" style="font-size:14px;color:var(--muted)">Your name:</label>
+<input id="uname" maxlength="14" placeholder="You" style="padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);font-size:14px;width:150px">
+</div>
+
+<h2>Choose Difficulty</h2>
+<div class="setup" id="diffs">
+<button data-d="noob">Noob</button>
+<button data-d="beginner">Beginner</button>
+<button data-d="master">Master</button>
+<button data-d="grandmaster">Grand Master</button>
+</div>
+<small style="display:block;text-align:center;margin:-8px 0 14px">Noob &amp; Beginner show which cards you can play. Master &amp; Grand Master hide the hints — and the computer plays smarter too.</small>
+
+<div class="table">
+<div class="modelabel" id="modelabel"></div>
+<div id="flipbanner" style="display:none;text-align:center;font-weight:900;padding:6px;border-radius:10px;margin-bottom:8px"></div>
+<div class="opps" id="opps"></div>
+<div class="mid">
+<div class="c back" id="deck" title="Draw a card">UNO</div>
+<div id="top"></div>
+<div>Color: <span class="dot" id="col"></span></div>
+</div>
+<div class="msg" id="msg">Choose the number of players to start.</div>
+<div class="pick" id="pick" hidden></div>
+<div class="row" id="ph"></div>
+<div style="text-align:center;margin-top:8px"><button class="btn" id="new">New Game</button></div>
+<div class="score" id="score"></div>
+</div>
+</section>
+
+<button class="unobtn" id="unobtn" hidden>UNO!</button>
+
+<footer>My UNO · This is a fan-made game website.</footer>
+
+<script>
+(function(){
+var COL=['R','Y','G','B'],HEX={R:'#e53935',Y:'#fdd835',G:'#43a047',B:'#1e88e5'};
+var SYM={S:'⊘',R:'⇄',D:'+2',W:'★',F:'+4',D5:'+5',D6:'+6',FW:'+10',SE:'SE',FL:'⤾',DA:'?!',WS:'⊘',WR:'⇄'};
+var MODES={
+  classic:{label:'Classic',start:7},
+  nomercy:{label:'No Mercy',start:7,extraColored:['D6'],extraWild:[{v:'FW',n:2}]},
+  flip:{label:'Flip',start:7,extraColored:['SE','D5','FL','FL']},
+  allwild:{label:'All Wild',start:7,allWild:true},
+  dare:{label:'Dare',start:7,extraColored:['DA','DA']},
+  speed:{label:'Speed',start:5}
+};
+var DARES=['Skip your next draw excuse and sing the alphabet!','Do 5 finger taps on the table!','Say "UNO forever" before your next turn!','Wink at your opponent!','Tap your nose before playing again!'];
+function dareText(){return DARES[Math.floor(Math.random()*DARES.length)]}
+var modeKey='classic',mode=MODES.classic;
+function toggleDark(){
+  document.body.classList.toggle('uf-dark');
+  var isDark=document.body.classList.contains('uf-dark');
+  var b=$('flipbanner');
+  if(modeKey==='flip'){
+    b.style.display='block';
+    b.style.background=isDark?'#7c4dff':'#ffe469';
+    b.style.color=isDark?'#fff':'#3a2f00';
+    b.textContent=isDark?'🌙 Table flipped — DARK side!':'☀️ Table flipped — LIGHT side!';
+  }
+}
+var N=2,names=['You','Computer 1','Computer 2','Computer 3'];
+try{var savedName=localStorage.getItem('uno-username');if(savedName)names[0]=savedName}catch(e){}
+var diff='beginner';
+var deck,disc,hands,turn,dir,color,over,pend,busy,scores;
+var ac=null;
+function beep(freq,dur,type){
+  try{
+    if(!ac)ac=new (window.AudioContext||window.webkitAudioContext)();
+    var o=ac.createOscillator(),g=ac.createGain();
+    o.type=type||'sine';o.frequency.value=freq;o.connect(g);g.connect(ac.destination);
+    g.gain.setValueAtTime(.08,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+dur);
+    o.start();o.stop(ac.currentTime+dur);
+  }catch(e){}
+}
+function sndPlay(){beep(440,.12)}
+function sndDraw(){beep(220,.1,'square')}
+function sndSpecial(){beep(600,.08);setTimeout(function(){beep(760,.12)},90)}
+function sndWin(){[523,659,784,1046].forEach(function(f,i){setTimeout(function(){beep(f,.18)},i*110)})}
+function loadScores(){
+  try{var s=JSON.parse(localStorage.getItem('uno-scores-'+modeKey+'-'+diff+'-'+N));if(s&&s.length===N)return s}catch(e){}
+  return new Array(N).fill(0);
+}
+function saveScores(){try{localStorage.setItem('uno-scores-'+modeKey+'-'+diff+'-'+N,JSON.stringify(scores))}catch(e){}}
+function shuffle(d){for(var j=d.length-1;j>0;j--){var r=Math.floor(Math.random()*(j+1));var t=d[j];d[j]=d[r];d[r]=t}return d}
+function build(){
+  if(mode.allWild){
+    var p=[];var i;
+    for(i=0;i<12;i++)p.push({c:'W',v:'W'});
+    for(i=0;i<10;i++)p.push({c:'W',v:'F'});
+    for(i=0;i<8;i++)p.push({c:'W',v:'WS'});
+    for(i=0;i<8;i++)p.push({c:'W',v:'WR'});
+    return shuffle(p);
+  }
+  var d=[];
+  COL.forEach(function(c){
+    d.push({c:c,v:'0'});
+    for(var k=0;k<2;k++){for(var n=1;n<=9;n++)d.push({c:c,v:''+n});['S','R','D'].forEach(function(v){d.push({c:c,v:v})})}
+    (mode.extraColored||[]).forEach(function(v){d.push({c:c,v:v})});
+  });
+  for(var i=0;i<4;i++){d.push({c:'W',v:'W'});d.push({c:'W',v:'F'})}
+  (mode.extraWild||[]).forEach(function(e){for(var j=0;j<e.n;j++)d.push({c:'W',v:e.v})});
+  return shuffle(d);
+}
+function drawTo(who,n){
+  for(var i=0;i<n;i++){
+    if(!deck.length){var top=disc.pop();deck=disc.sort(function(){return Math.random()-.5});disc=[top]}
+    if(deck.length)hands[who].push(deck.pop());
+  }
+}
+function ok(c){var t=disc[disc.length-1];return c.c==='W'||c.c===color||c.v===t.v}
+function nextOf(cur,steps){var i=cur;for(var s=0;s<steps;s++)i=(i+dir+N)%N;return i}
+function label(c){return SYM[c.v]||c.v}
+function start(){
+  scores=loadScores();
+  document.body.classList.remove('uf-dark');
+  $('flipbanner').style.display='none';
+  $('modelabel').textContent=mode.label+' Mode · '+diff.charAt(0).toUpperCase()+diff.slice(1);
+  deck=build();disc=[];hands=[];for(var i=0;i<N;i++){hands.push([]);drawTo(i,mode.start)}
+  var f;do{f=deck.pop();if(f.c==='W')deck.unshift(f)}while(f.c==='W');
+  disc.push(f);color=f.c;turn=0;dir=1;over=false;pend=null;busy=false;
+  $('msg').textContent='Your turn!';
+  if(f.v==='D'){drawTo(nextOf(0,1),2);turn=nextOf(0,2)}
+  else if(f.v==='S'||f.v==='R'){turn=nextOf(0,2)}
+  render();
+  if(turn!==0)setTimeout(botTurn,900);
+}
+function $(i){return document.getElementById(i)}
+window.goMode=function(key){
+  var btn=document.querySelector('#modes button[data-m="'+key+'"]');
+  if(btn)btn.click();
+  var el=$('play');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+};
+$('uname').value=names[0]!=='You'?names[0]:'';
+$('uname').addEventListener('change',function(){
+  var v=$('uname').value.trim();
+  names[0]=v||'You';
+  try{localStorage.setItem('uno-username',names[0])}catch(e){}
+  render();
+});
+var TUT=[
+  {t:'🎯 Goal',b:"Be the first player to get rid of all your cards. Simple as that!"},
+  {t:'🃏 Setup',b:'Everyone starts with a hand of cards. One card is placed face-up to start the pile in the middle.'},
+  {t:'🔁 Your Turn',b:"Play a card that matches the color OR the number/symbol of the top card. Can't match? Draw one from the deck instead."},
+  {t:'⊘ ⇄ Action Cards',b:'Skip makes the next player lose their turn. Reverse flips the play direction around the table.'},
+  {t:'+2 / +4',b:'These force the next player to draw cards and lose their turn. Wild +4 also lets you pick the new color.'},
+  {t:'★ Wild',b:'Play it anytime, on any card, and choose whichever color you want next.'},
+  {t:'❗ Say UNO!',b:"When you're down to your last card, tap the UNO button. Now try a game below!"}
+];
+var tutI=0;
+function tutRender(){
+  var s=TUT[tutI];
+  $('tutBody').innerHTML='<h3 style="margin:0 0 8px">'+s.t+'</h3><p style="margin:0;color:var(--muted)">'+s.b+'</p>';
+  $('tutIdx').textContent=(tutI+1)+' / '+TUT.length;
+  $('tutPrev').disabled=tutI===0;
+  $('tutNext').textContent=tutI===TUT.length-1?'Done':'Next';
+}
+$('learnBtn').onclick=function(){tutI=0;tutRender();$('tutOverlay').style.display='flex'};
+$('tutClose').onclick=function(){$('tutOverlay').style.display='none'};
+$('tutPrev').onclick=function(){if(tutI>0){tutI--;tutRender()}};
+$('tutNext').onclick=function(){if(tutI<TUT.length-1){tutI++;tutRender()}else{$('tutOverlay').style.display='none'}};
+function afterPlay(idx,card,next){
+  if(hands[idx].length===0){
+    over=true;scores[idx]=(scores[idx]||0)+1;saveScores();render();
+    $('msg').textContent=(idx===0?'Congrats! You won! 🎉':names[idx]+' won!');
+    if(idx===0)sndWin();
+    return;
+  }
+  if(hands[idx].length===1)$('msg').textContent+=' '+names[idx]+': UNO!';
+  turn=next;render();
+  if(turn!==0&&!over)setTimeout(botTurn,900);
+}
+function play(idx,i,pick){
+  if(busy)return;busy=true;
+  var c=hands[idx].splice(i,1)[0];disc.push(c);color=c.c==='W'?pick:c.c;
+  var note=names[idx]+' played '+label(c)+'.';
+  var next=nextOf(idx,1);
+  if(c.v==='S'){next=nextOf(idx,2);sndSpecial();note+=' Skip!'}
+  else if(c.v==='R'){dir*=-1;next=(N===2)?nextOf(idx,2):nextOf(idx,1);sndSpecial();note+=' Reverse!'}
+  else if(c.v==='D'||c.v==='D5'||c.v==='D6'){var amt=c.v==='D'?2:(c.v==='D5'?5:6);var t1=nextOf(idx,1);drawTo(t1,amt);next=nextOf(idx,2);sndSpecial();note+=' '+names[t1]+' +'+amt+'!'}
+  else if(c.v==='F'||c.v==='FW'){var amt2=c.v==='F'?4:10;var t2=nextOf(idx,1);drawTo(t2,amt2);next=nextOf(idx,2);sndSpecial();note+=' '+names[t2]+' +'+amt2+'!'}
+  else if(c.v==='SE'){next=idx;sndSpecial();note+=' Skip Everyone!'}
+  else if(c.v==='FL'){toggleDark();sndSpecial();note+=' 🔄 Flip!'}
+  else if(c.v==='DA'){next=nextOf(idx,2);sndSpecial();note+=' Dare: '+dareText()}
+  else if(c.v==='WS'){next=nextOf(idx,2);sndSpecial();note+=' Skip!'}
+  else if(c.v==='WR'){dir*=-1;next=(N===2)?nextOf(idx,2):nextOf(idx,1);sndSpecial();note+=' Reverse!'}
+  else sndPlay();
+  $('msg').textContent=note;
+  $('top').classList.remove('pop');void $('top').offsetWidth;$('top').classList.add('pop');
+  busy=false;
+  afterPlay(idx,c,next);
+}
+var ATTACK={S:1,R:1,D:1,D5:1,D6:1,SE:1,DA:1,WS:1,WR:1};
+function chooseBotCard(idx){
+  var h=hands[idx],legal=[];
+  for(var k=0;k<h.length;k++)if(ok(h[k]))legal.push(k);
+  if(!legal.length)return -1;
+  if(diff==='noob')return legal[Math.floor(Math.random()*legal.length)];
+  var nonWild=legal.filter(function(k){return h[k].c!=='W'});
+  if(diff==='beginner')return nonWild.length?nonWild[0]:legal[0];
+  var attack=legal.filter(function(k){return ATTACK[h[k].v]});
+  if(attack.length)return attack[0];
+  return nonWild.length?nonWild[0]:legal[0];
+}
+function botTurn(){
+  if(over||turn===0)return;
+  var idx=turn,i=chooseBotCard(idx);
+  if(i<0){drawTo(idx,1);sndDraw();$('msg').textContent=names[idx]+' drew a card.';turn=nextOf(idx,1);render();
+    if(turn!==0&&!over)setTimeout(botTurn,900);return}
+  var h=hands[idx],cnt={R:0,Y:0,G:0,B:0};h.forEach(function(c){if(c.c!=='W')cnt[c.c]++});
+  var best=COL.reduce(function(a,b){return cnt[b]>cnt[a]?b:a},'R');
+  play(idx,i,best);
+}
+function cardEl(c,can,i,highlight){
+  if(highlight===undefined)highlight=can;
+  var d=document.createElement('div');d.className='c '+c.c+(highlight?' can':'');
+  var v=label(c);
+  d.innerHTML='<span class="corner tl">'+v+'</span><span class="oval"></span><span class="val">'+v+'</span><span class="corner br">'+v+'</span>';
+  if(can)d.onclick=function(){click(i)};
+  return d;
+}
+function click(i){
+  if(over||turn!==0||pend!==null||busy)return;
+  var c=hands[0][i];
+  if(!ok(c)){
+    $('msg').textContent="That card doesn't match — try another.";
+    var ph=$('ph');ph.classList.remove('shake');void ph.offsetWidth;ph.classList.add('shake');
+    return;
+  }
+  if(c.c==='W'){
+    pend=i;var pendCard=c;var p=$('pick');p.innerHTML='';p.hidden=false;
+    var lbl=document.createElement('div');lbl.style.cssText='width:100%;text-align:center;font-weight:700;margin-bottom:6px';
+    lbl.textContent='Playing '+label(c)+' — choose a color:';p.appendChild(lbl);
+    COL.forEach(function(k){var b=document.createElement('button');b.style.background=HEX[k];b.setAttribute('aria-label',k);
+      b.onclick=function(){
+        pend=null;p.hidden=true;
+        var realIdx=hands[0].indexOf(pendCard);
+        if(realIdx<0)return;
+        play(0,realIdx,k);
+      };p.appendChild(b)});
+    $('msg').textContent='Choose a color:';
+    $('ph').style.opacity='.4';$('ph').style.pointerEvents='none';
+  }else play(0,i);
+}
+function render(){
+  var opps=$('opps');opps.innerHTML='';
+  for(var idx=1;idx<N;idx++){
+    var d=document.createElement('div');d.className='opp'+(turn===idx&&!over?' active':'');
+    var stack=document.createElement('div');stack.className='stack';
+    var cnt=Math.min(hands[idx].length,6);
+    for(var s=0;s<cnt;s++){var cc=document.createElement('div');cc.className='c back';cc.style.left=(s*4)+'px';cc.style.transform='rotate('+(s*3-cnt*1.5)+'deg)';stack.appendChild(cc)}
+    var nm=document.createElement('b');nm.textContent=names[idx];
+    var sm=document.createElement('small');sm.textContent=hands[idx].length+' cards';
+    d.appendChild(stack);d.appendChild(nm);d.appendChild(sm);opps.appendChild(d);
+  }
+  var t=$('top');t.innerHTML='';var tc=disc[disc.length-1];var e=cardEl({c:tc.c==='W'?color:tc.c,v:tc.v},false);
+  if(tc.c==='W')e.className='c '+color;t.appendChild(e);
+  $('col').style.background=HEX[color];
+  var ph=$('ph');ph.innerHTML='';ph.style.opacity='';ph.style.pointerEvents='';
+  var showHints=(diff==='noob'||diff==='beginner');
+  hands[0].forEach(function(c,i){
+    var legal=turn===0&&!over&&ok(c);
+    var clickable=turn===0&&!over&&(showHints?legal:true);
+    var highlight=showHints&&legal;
+    var el=cardEl(c,clickable,i,highlight);
+    if(showHints&&turn===0&&!over&&!legal)el.classList.add('dim');
+    ph.appendChild(el);
+  });
+  $('unobtn').hidden=over||hands[0].length>2;
+  var sc=$('score');sc.innerHTML='';names.slice(0,N).forEach(function(nm,i){var s=document.createElement('span');s.textContent=nm+': '+(scores[i]||0)+' wins';sc.appendChild(s)});
+}
+$('deck').onclick=function(){
+  if(over||turn!==0||pend!==null||busy)return;
+  drawTo(0,1);sndDraw();turn=nextOf(0,1);$('msg').textContent='You drew a card.';render();
+  if(turn!==0&&!over)setTimeout(botTurn,900);
+};
+$('unobtn').onclick=function(){
+  sndSpecial();var b=$('unobtn');b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');
+  $('msg').textContent='You: UNO!!';
+};
+$('new').onclick=function(){if(N)start()};
+document.querySelectorAll('#modes button').forEach(function(b){
+  b.onclick=function(){
+    modeKey=b.getAttribute('data-m');mode=MODES[modeKey];
+    document.querySelectorAll('#modes button').forEach(function(x){x.classList.remove('sel')});
+    b.classList.add('sel');
+    start();
+  };
+});
+document.querySelector('#modes button').classList.add('sel');
+document.querySelectorAll('#setup button').forEach(function(b){
+  b.onclick=function(){
+    N=parseInt(b.getAttribute('data-n'),10);
+    document.querySelectorAll('#setup button').forEach(function(x){x.classList.remove('sel')});
+    b.classList.add('sel');
+    start();
+  };
+});
+document.querySelector('#setup button').classList.add('sel');
+document.querySelectorAll('#diffs button').forEach(function(b){
+  b.onclick=function(){
+    diff=b.getAttribute('data-d');
+    document.querySelectorAll('#diffs button').forEach(function(x){x.classList.remove('sel')});
+    b.classList.add('sel');
+    start();
+  };
+});
+document.querySelectorAll('#diffs button')[1].classList.add('sel');
+start();
+})();
+</script>
+</body>
+</html>
